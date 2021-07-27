@@ -8,7 +8,7 @@ import React, {
 import {} from '../carobiggrid/CaroApp';
 
 const CountDownEngine = (
-  { max = 10000, active = false, timeUp, render},
+  { max = 10000, active = false, timeUp, render },
   ref
 ) => {
   if (isNaN(max)) {
@@ -26,20 +26,21 @@ const CountDownEngine = (
     if (counter === 0) {
       timeUp();
     }
-  }, [counter, timeUp]);
+  }, [counter,timeUp]);
 
   useEffect(() => {
     setCounter(+max);
   }, [max]);
 
   useEffect(() => {
-    const identifier = setTimeout(() => {
-      if (active && counter > 0) {
+    if (active && counter > 0) {
+      var identifier = setTimeout(() => {
         setCounter((preState) => preState - 1);
-      }
-    }, 1000);
-
-    return () => {clearTimeout(identifier);};
+      }, 1000);
+    }
+    return () => {
+      clearTimeout(identifier);
+    };
   }, [counter, active]);
 
   return <>{render(counter)}</>;

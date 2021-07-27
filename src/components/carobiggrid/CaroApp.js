@@ -201,7 +201,7 @@ const CaroApp = () => {
   const [activeTimmer, setActiveTimer] = useState(false);
   const [gameInfo, setGameInfo] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
-  // const oldGridRef = useRef([]);
+  const canMoveBackRef = useRef(false);
   const toolBarRef = useRef();
 
   /**
@@ -210,7 +210,6 @@ const CaroApp = () => {
   useEffect(() => {
     setGrid(createGrid(GRID_SIZE));
     setPreGrid(createGrid(GRID_SIZE));
-    // oldGridRef.current = createGrid(GRID_SIZE);
   }, []);
 
   /**
@@ -223,11 +222,11 @@ const CaroApp = () => {
         winn = getPlayerByTurn(turn) === xName ? STATE.O : STATE.X,
         win = winner(grid, currentPos.row, currentPos.col, cellEqual),
         text = (
-          <div style={{ display: 'flex', 'align-items': 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             {winn} THẮNG
           </div>
         );
-      // let
+
       if (win !== -1) {
         setModalContent(text);
         setModalOpen(true);
@@ -238,7 +237,7 @@ const CaroApp = () => {
         setModalOpen(true);
       }
     }
-  }, [grid, currentPos]);
+  }, [grid, currentPos, turn, counter]);
 
   /**
    * Click vào ô
@@ -248,7 +247,6 @@ const CaroApp = () => {
   const cellClickHandler = (pos) => {
     if (grid[pos.row][pos.col] !== STATE.BLANK) return;
     setPreGrid(grid);
-    // oldGridRef.current = grid;
     let newValue = turn ? STATE.O : STATE.X;
     setGrid((preState) =>
       preState.map((row, rIndex) =>
@@ -263,6 +261,7 @@ const CaroApp = () => {
     setcurrentPos(pos);
     setCounter((preState) => preState + 1);
     toolBarRef.current.resetTimer();
+    canMoveBackRef.current = true;
   };
 
   /**
@@ -271,7 +270,6 @@ const CaroApp = () => {
   const restartGameClickHandler = () => {
     setGrid(createGrid(GRID_SIZE));
     setPreGrid(createGrid(GRID_SIZE));
-    //oldGridRef.current = createGrid(GRID_SIZE);
     setTurn(true);
     setCounter(0);
     setActiveTimer(true);
@@ -284,12 +282,12 @@ const CaroApp = () => {
    * Quay lại bước vừa đi
    */
   const backPreviousStepClickHandler = useCallback(() => {
-    if (counter <= 0) return;
-    // setGrid(oldGridRef.current);
+    if (counter <= 0 || !canMoveBackRef.current) return;
+    canMoveBackRef.current = false;
     setGrid(preGrid);
-    setTurn((preState) => (preState !== turn ? preState : !preState));
-    setCounter(counter - 1);
-  }, [preGrid]);
+    setTurn(preState => !preState);
+    setCounter(preState => preState-1);
+  }, [preGrid, counter]);
 
   /**
    * Thoát game
@@ -319,7 +317,7 @@ const CaroApp = () => {
   const timeUp = () => {
     let xName = STATE.X.props.name,
       winner = getPlayerByTurn(turn) === xName ? STATE.O : STATE.X,
-      text = <div style={{ display: 'flex', 'align-items': 'center' }}>{winner} THẮNG</div>;
+      text = <div style={{ display: 'flex', alignItems: 'center' }}>{winner} THẮNG</div>;
 
     setModalContent(text);
     setModalOpen(true);
