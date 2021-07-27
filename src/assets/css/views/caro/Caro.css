@@ -1,0 +1,72 @@
+.grid {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  width: auto;
+  height: auto;
+  overflow: auto;
+  background-color: #fffcdd;
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  width: 100%;
+  display: flex;
+  flex: 1;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.cell {
+  min-width: 30px;
+  height: 30px;
+  flex: 1;
+  cursor: cell;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+}
+
+.cell:hover {
+  background-color: #faf4c1;
+}
+
+.hasvalue:hover {
+  opacity: 0.5;
+}
+
+.button-back-step {
+  margin-right: 10px;
+}
+
+.toolbar {
+  width: 100%;
+  border-radius: 2px;
+  background-color: #faf4c1;
+  position: sticky;
+  top: 0;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+.toolbar-side {
+  display: flex;
+  align-items: center;
+}
+
+.not-active {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.mg-r-10 {
+  margin-right: 10px;
+}

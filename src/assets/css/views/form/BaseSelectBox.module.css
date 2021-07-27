@@ -1,0 +1,23 @@
+.select {
+  border-radius: 2px;
+  font-weight: 500;
+  padding: 5px 5px;
+  border: 1px solid springgreen;
+  display: block;
+  width: 200px;
+}
+
+.select:focus-visible {
+  outline: 1px solid springgreen;
+}
+
+label {
+  display: inline-block;
+  font-size: 13px;
+  padding: 5px 0px;
+  font-weight: 500;
+}
+
+option {
+  text-align: center;
+}

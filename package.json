@@ -3,12 +3,21 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@atlaskit/button": "^15.1.8",
+    "@atlaskit/icon": "^21.7.1",
+    "@atlaskit/modal-dialog": "^11.7.2",
+    "@atlaskit/tag": "^11.1.2",
+    "@atlaskit/textfield": "^5.0.5",
+    "@atlaskit/toggle": "^12.2.2",
+    "@atlaskit/tooltip": "^17.3.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
+    "styled-components": "^5.3.0",
+    "uuid": "^8.3.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
@@ -34,5 +43,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "eslint-plugin-react-hooks": "^4.2.0"
   }
 }

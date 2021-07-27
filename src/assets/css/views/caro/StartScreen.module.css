@@ -1,0 +1,56 @@
+.overlay {
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.start-screen {
+  border: 10px solid springgreen;
+  width: 400px;
+  min-height: 350px;
+  background-color: #faf4c1;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.logo {
+  background-image: url('../../../imgs/caro-logo.png');
+  background-repeat: no-repeat;
+  background-position: center -50px;
+}
+
+.start-footer {
+  width: 100%;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.start-content {
+  padding: 10px 15px;
+  flex: 1 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.input {
+  margin-bottom: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: flex-end;
+}
+
+
