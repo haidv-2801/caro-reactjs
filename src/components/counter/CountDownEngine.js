@@ -2,7 +2,6 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useRef,
   useState,
 } from 'react';
 
@@ -27,7 +26,7 @@ const CountDownEngine = (
     if (counter === 0) {
       timeUp();
     }
-  }, [counter]);
+  }, [counter, timeUp]);
 
   useEffect(() => {
     setCounter(+max);

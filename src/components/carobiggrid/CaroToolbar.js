@@ -1,13 +1,13 @@
 import React, { createContext, forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import Button from '@atlaskit/button';
 import CountDownEngine from '../counter/CountDownEngine';
-import {StateContext} from './CaroApp'
+import CaroAppContext from '../../store/caroapp-context';
 
 export const ToolbarContext = createContext();
 
 const CaroToolbar = (props, ref) => {
   const timmerRef = useRef();
-  const stateCtx = useContext(StateContext)
+  const stateCtx = useContext(CaroAppContext)
 
   useImperativeHandle(ref, () => ({
     resetTimer() {
@@ -42,9 +42,7 @@ const CaroToolbar = (props, ref) => {
         </div>
         <div className="toolbar-side">
           Thời gian còn lại:
-          <CountDownEngine timeUp={timeUp} ref={timmerRef} max={props.timmer} render={(data) => data} active={props.activeTimmer}>
-            {(value)=>value}
-          </CountDownEngine>
+          <CountDownEngine timeUp={timeUp} ref={timmerRef} max={props.timmer} render={(data) => data} active={props.activeTimmer}/>
         </div>
         <div className="toolbar-side">
           <Button onClick={props.exitGame} className="button-back-step-exit">

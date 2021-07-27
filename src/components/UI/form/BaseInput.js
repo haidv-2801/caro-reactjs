@@ -17,7 +17,7 @@ const BaseInput = (props, ref) => {
   return (
     <div className={classes['form-control']}>
       <label htmlFor={props.input.id}>{props.label}</label>
-      <input onChange={onChangeHandler} ref={inputRef} {...props.input} className={classes.input} />
+      <input onChange={onChangeHandler} ref={inputRef} {...props.input} className={`${classes.input} invalid`} />
     </div>
   );
 };

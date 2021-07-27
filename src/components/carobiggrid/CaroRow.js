@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import {StateContext} from './CaroApp'
+import CaroAppContext from '../../store/caroapp-context';
 
 const CaroRow = (props) => {
-  const state = useContext(StateContext);
+  const state = useContext(CaroAppContext);
   return (
     <div className="row">
       {props.rowData.map((cellData, cellIndex) => (

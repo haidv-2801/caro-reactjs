@@ -27,9 +27,9 @@ const CaroStartScreen = (props) => {
   };
 
   return (
-    <div className={styles['overlay']}>
+    <div className={styles.overlay}>
       <div className={`${styles['start-screen']}`}>
-        <div className={`${styles['start-content']} ${styles['logo']}`}>
+        <div className={`${styles['start-content']} ${styles.logo}`}>
           <div className={styles.row}>
             <BaseInput
               ref={inputRef}
@@ -75,7 +75,7 @@ const CaroStartScreen = (props) => {
         <div className={`${styles['start-footer']}`}>
           <Button
             onClick={() => props.startClickHandler(inputValue)}
-            className={styles['button']}
+            className={styles.button}
           >
             Chơi
           </Button>

@@ -12,6 +12,7 @@ import CaroStartScreen from './CaroStartScreen';
 import CrossIcon from '@atlaskit/icon/glyph/cross';
 import MediaServicesPreselectedIcon from '@atlaskit/icon/glyph/media-services/preselected';
 import ModalNotification from '../UI/modal/ModalNotification';
+import CaroAppContext from '../../store/caroapp-context';
 
 const STATE = {
   BLANK: '',
@@ -191,6 +192,7 @@ const getPlayer = (grid, pos) => {
 
 const CaroApp = () => {
   const [grid, setGrid] = useState([]);
+  const [preGrid, setPreGrid] = useState([]);
   const [screenMode, setScreenMode] = useState(START_SCREEN);
   const [currentPos, setcurrentPos] = useState(null);
   const [modalContent, setModalContent] = useState('');
@@ -199,7 +201,7 @@ const CaroApp = () => {
   const [activeTimmer, setActiveTimer] = useState(false);
   const [gameInfo, setGameInfo] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
-  const oldGridRef = useRef([]);
+  // const oldGridRef = useRef([]);
   const toolBarRef = useRef();
 
   /**
@@ -207,7 +209,8 @@ const CaroApp = () => {
    */
   useEffect(() => {
     setGrid(createGrid(GRID_SIZE));
-    oldGridRef.current = createGrid(GRID_SIZE);
+    setPreGrid(createGrid(GRID_SIZE));
+    // oldGridRef.current = createGrid(GRID_SIZE);
   }, []);
 
   /**
@@ -244,7 +247,8 @@ const CaroApp = () => {
    */
   const cellClickHandler = (pos) => {
     if (grid[pos.row][pos.col] !== STATE.BLANK) return;
-    oldGridRef.current = grid;
+    setPreGrid(grid);
+    // oldGridRef.current = grid;
     let newValue = turn ? STATE.O : STATE.X;
     setGrid((preState) =>
       preState.map((row, rIndex) =>
@@ -266,7 +270,8 @@ const CaroApp = () => {
    */
   const restartGameClickHandler = () => {
     setGrid(createGrid(GRID_SIZE));
-    oldGridRef.current = createGrid(GRID_SIZE);
+    setPreGrid(createGrid(GRID_SIZE));
+    //oldGridRef.current = createGrid(GRID_SIZE);
     setTurn(true);
     setCounter(0);
     setActiveTimer(true);
@@ -280,10 +285,11 @@ const CaroApp = () => {
    */
   const backPreviousStepClickHandler = useCallback(() => {
     if (counter <= 0) return;
-    setGrid(oldGridRef.current);
+    // setGrid(oldGridRef.current);
+    setGrid(preGrid);
     setTurn((preState) => (preState !== turn ? preState : !preState));
     setCounter(counter - 1);
-  }, [grid]);
+  }, [preGrid]);
 
   /**
    * Thoát game
@@ -320,7 +326,7 @@ const CaroApp = () => {
   };
 
   return (
-    <StateContext.Provider value={{ STATE, time: gameInfo }}>
+    <CaroAppContext.Provider value={{ STATE }}>
       {screenMode === START_SCREEN &&
         ReactDom.createPortal(
           <CaroStartScreen
@@ -350,7 +356,7 @@ const CaroApp = () => {
         timeUp={timeUp}
       />
       <CaroGrid grid={grid} cellClickHandler={cellClickHandler} />
-    </StateContext.Provider>
+    </CaroAppContext.Provider>
   );
 };
 

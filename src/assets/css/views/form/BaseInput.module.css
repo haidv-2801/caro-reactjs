@@ -11,6 +11,10 @@
   outline: 1px solid springgreen;
 }
 
+.input.invalid {
+  border: 1px solid red !important;
+}
+
 label {
     display: inline-block;
     font-size: 13px;
