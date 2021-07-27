@@ -217,7 +217,6 @@ const CaroApp = () => {
   useEffect(() => {
     if (grid.length && currentPos) {
       let xName = STATE.X.props.name,
-        oName = STATE.O.props.name,
         winn = getPlayerByTurn(turn) === xName ? STATE.O : STATE.X,
         win = winner(grid, currentPos.row, currentPos.col, cellEqual),
         text = (
@@ -284,7 +283,7 @@ const CaroApp = () => {
     setGrid(oldGridRef.current);
     setTurn((preState) => (preState !== turn ? preState : !preState));
     setCounter(counter - 1);
-  }, [oldGridRef.current]);
+  }, [grid]);
 
   /**
    * Thoát game

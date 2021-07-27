@@ -1,6 +1,6 @@
 import React, { createContext, forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import Button from '@atlaskit/button';
-import CountDownEnige from '../counter/CountDownEnige';
+import CountDownEngine from '../counter/CountDownEngine';
 import {StateContext} from './CaroApp'
 
 export const ToolbarContext = createContext();
@@ -42,7 +42,9 @@ const CaroToolbar = (props, ref) => {
         </div>
         <div className="toolbar-side">
           Thời gian còn lại:
-          <CountDownEnige timeUp={timeUp} ref={timmerRef} max={props.timmer} render={(data) => data} active={props.activeTimmer}/>
+          <CountDownEngine timeUp={timeUp} ref={timmerRef} max={props.timmer} render={(data) => data} active={props.activeTimmer}>
+            {(value)=>value}
+          </CountDownEngine>
         </div>
         <div className="toolbar-side">
           <Button onClick={props.exitGame} className="button-back-step-exit">
