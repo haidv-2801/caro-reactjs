@@ -22,6 +22,7 @@ CaroHelpers.STATE = {
 CaroHelpers.GRID_SIZE = 50;
 CaroHelpers.WIN_SIZE = 5;
 
+
 /**
  * Kẻ bảng
  * @param {cỡ} size
