@@ -1,5 +1,6 @@
 import React, {
   forwardRef,
+  useCallback,
   useContext,
   useImperativeHandle,
   useRef,
@@ -13,17 +14,31 @@ const CaroToolbar = (props, ref) => {
   const stateCtx = useContext(CaroAppContext);
 
   useImperativeHandle(ref, () => ({
+    /**
+     * Đặt lại thời gian
+     * DVHAI 24/07/2021
+     */
     resetTimer() {
       timmerRef.current.reset();
     },
+
+    /**
+     * Lấy thông tin thời gian
+     * DVHAI 24/07/2021
+     */
     getCounter() {
       return timmerRef.current.getCounter();
     },
   }));
 
-  const timeUp = () => {
-    props.timeUp();
-  };
+  /**
+   * Hết thời gian
+   * DVHAI 24/07/2021
+   */
+  const {timeUp} = props;
+  const timeIsUp = useCallback(() => {
+    timeUp();
+  }, [timeUp]);
 
   return (
     <div className="toolbar">
@@ -49,7 +64,7 @@ const CaroToolbar = (props, ref) => {
       <div className="toolbar-side">
         Thời gian còn lại:
         <CountDownEngine
-          timeUp={timeUp}
+          timeUp={timeIsUp}
           ref={timmerRef}
           max={props.timmer}
           render={(data) => data}

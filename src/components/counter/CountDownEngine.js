@@ -17,17 +17,37 @@ const CountDownEngine = (
   const [counter, setCounter] = useState(+max);
 
   useImperativeHandle(ref, () => ({
+    /**
+     * Đặt lại thời gian
+     * DVHAI 25/07/2021
+     */
     reset() {
       setCounter(+max);
     },
   }));
 
+  /**
+   * Cài đặt giá trị max
+   * DVHAI 25/07/2021
+   */
+  useEffect(() => {
+    setCounter(+max);
+  }, [max]);
+
+  /**
+   * Hết thời gian
+   * DVHAI 25/07/2021
+   */
   useEffect(() => {
     if (counter === 0) {
       timeUp();
     }
-  }, [counter,timeUp]);
+  }, [counter, timeUp]);
 
+  /**
+   * Thời gian chạy mỗi giây
+   * DVHAI 25/07/2021
+   */
   useEffect(() => {
     setCounter(+max);
   }, [max]);

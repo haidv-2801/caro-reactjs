@@ -17,6 +17,11 @@ const CaroStartScreen = (props) => {
     inputRef.current.focus();
   }, []);
 
+  /**
+   * Lấy giá trị input
+   * @param {event} e 
+   * DVHAI 
+   */
   const inputChangeHandler = (e) => {
     let name = e.target.name,
       value = e.target.value || name;
