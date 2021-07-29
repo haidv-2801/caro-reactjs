@@ -1,17 +1,15 @@
 import React, {
   forwardRef,
   useCallback,
-  useContext,
   useImperativeHandle,
   useRef,
 } from 'react';
 import Button from '@atlaskit/button';
 import CountDownEngine from '../counter/CountDownEngine';
-import CaroAppContext from '../../store/caroapp-context';
+import CaroHelpers from '../../helpers/Caro';
 
 const CaroToolbar = (props, ref) => {
   const timmerRef = useRef();
-  const stateCtx = useContext(CaroAppContext);
 
   useImperativeHandle(ref, () => ({
     /**
@@ -54,11 +52,11 @@ const CaroToolbar = (props, ref) => {
         </Button>
 
         <span className="mg-r-10">Người chơi hiện tại: </span>
-        {props.turn ? stateCtx.STATE.O : stateCtx.STATE.X}
+        {CaroHelpers.getDisplayCell(props.turn)}
         {`${
           props.turn
-            ? props.gameInfo.player1 || 'player'
-            : props.gameInfo.player2 || 'player'
+            ? props.gameInfo.player1
+            : props.gameInfo.player2
         }`}
       </div>
       <div className="toolbar-side">

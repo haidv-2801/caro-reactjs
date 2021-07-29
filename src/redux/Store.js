@@ -1,6 +1,12 @@
-import { createStore } from "redux";
-import rootReducer from "./reducers/Index";
+import { configureStore } from '@reduxjs/toolkit';
+import reducer from './slices/CaroSlice';
 
-const store = createStore(rootReducer);
+const rootReducer = {
+  caro: reducer,
+};
+
+const store = configureStore({
+  reducer: rootReducer,
+});
 
 export default store;

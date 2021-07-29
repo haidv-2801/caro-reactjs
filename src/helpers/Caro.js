@@ -9,19 +9,14 @@ var CaroHelpers = {};
  */
 CaroHelpers.STATE = {
   BLANK: '',
-  X: <CrossIcon name="X" size="large" primaryColor="red" />,
-  O: (
-    <MediaServicesPreselectedIcon
-      name="O"
-      size="large"
-      primaryColor="#4fff4f"
-    />
-  ),
+  X: 'X',
+  O: 'O',
 };
 
 CaroHelpers.GRID_SIZE = 50;
 CaroHelpers.WIN_SIZE = 5;
-
+CaroHelpers.DEFAULT_NAME_PLAYER1= 'player1';
+CaroHelpers.DEFAULT_NAME_PLAYER2= 'player2';
 
 /**
  * Kẻ bảng
@@ -47,7 +42,9 @@ CaroHelpers.createGrid = (size) => {
  * DVHAI 23/07/2021
  */
 CaroHelpers.getPlayerByTurn = (turn) =>
-  turn === true ? CaroHelpers.STATE.O.props.name : CaroHelpers.STATE.X.props.name;
+  turn === true
+    ? CaroHelpers.getDisplayCell(CaroHelpers.STATE.O)
+    : CaroHelpers.getDisplayCell(CaroHelpers.STATE.X);
 
 /**
  *Người thắng
@@ -64,18 +61,21 @@ CaroHelpers.winner = (grid, curX, curY, compare) => {
     mainDiagonalCounter = 0,
     seDiagonalCounter = 0,
     boundaryTopMain = CaroHelpers.getBoundaryCell(curX, curY, 'MAIN_DIAGONAL'),
-    boundaryTopSec = CaroHelpers.getBoundaryCell(curX, curY, 'SECONDARY_DIAGONAl'),
+    boundaryTopSec = CaroHelpers.getBoundaryCell(
+      curX,
+      curY,
+      'SECONDARY_DIAGONAl'
+    ),
     mainX = boundaryTopMain.x,
     mainY = boundaryTopMain.y,
     secX = boundaryTopSec.x,
     secY = boundaryTopSec.y,
-    max = 0;
+    max = 0,
+    currentPlayer = grid[curX][curY];
 
   for (let i = 1; i < CaroHelpers.GRID_SIZE; i++) {
     if (
-      compare(grid[i][curY], grid[i - 1][curY]) &&
-      CaroHelpers.getPlayer(grid, { row: i, col: curY }) ===
-        CaroHelpers.getPlayer(grid, { row: curX, col: curY })
+      compare(grid[i][curY], grid[i - 1][curY]) && grid[i][curY] === currentPlayer
     ) {
       rowCounter++;
     } else {
@@ -86,9 +86,7 @@ CaroHelpers.winner = (grid, curX, curY, compare) => {
 
   for (let i = 1; i < CaroHelpers.GRID_SIZE; i++) {
     if (
-      compare(grid[curX][i], grid[curX][i - 1]) &&
-      CaroHelpers.getPlayer(grid, { row: curX, col: i }) ===
-        CaroHelpers.getPlayer(grid, { row: curX, col: curY })
+      compare(grid[curX][i], grid[curX][i - 1]) && grid[curX][i] === currentPlayer
     ) {
       colCounter++;
     } else {
@@ -99,9 +97,7 @@ CaroHelpers.winner = (grid, curX, curY, compare) => {
 
   while (CaroHelpers.canMove(mainX + 1, mainY + 1)) {
     if (
-      compare(grid[mainX][mainY], grid[mainX + 1][mainY + 1]) &&
-      CaroHelpers.getPlayer(grid, { row: mainX, col: mainY }) ===
-        CaroHelpers.getPlayer(grid, { row: curX, col: curY })
+      compare(grid[mainX][mainY], grid[mainX + 1][mainY + 1]) && grid[mainX][mainY] === currentPlayer
     ) {
       mainDiagonalCounter++;
     } else {
@@ -114,9 +110,7 @@ CaroHelpers.winner = (grid, curX, curY, compare) => {
 
   while (CaroHelpers.canMove(secX + 1, secY - 1)) {
     if (
-      compare(grid[secX][secY], grid[secX + 1][secY - 1]) &&
-      CaroHelpers.getPlayer(grid, { row: secX, col: secY }) ===
-        CaroHelpers.getPlayer(grid, { row: curX, col: curY })
+      compare(grid[secX][secY], grid[secX + 1][secY - 1]) && grid[secX][secY] === currentPlayer
     ) {
       seDiagonalCounter++;
     } else {
@@ -128,8 +122,7 @@ CaroHelpers.winner = (grid, curX, curY, compare) => {
   }
 
   if (max >= CaroHelpers.WIN_SIZE - 1) {
-    console.log(CaroHelpers.getPlayer(grid, { row: curX, col: curY }));
-    return CaroHelpers.getPlayer(grid, { row: curX, col: curY });
+    return currentPlayer;
   }
 
   return -1;
@@ -169,7 +162,9 @@ CaroHelpers.getBoundaryCell = (curX, curY, diagonalType) => {
  * DVHAI 23/07/2021
  */
 CaroHelpers.canMove = (x, y) => {
-  return x >= 0 && x < CaroHelpers.GRID_SIZE && y >= 0 && y < CaroHelpers.GRID_SIZE;
+  return (
+    x >= 0 && x < CaroHelpers.GRID_SIZE && y >= 0 && y < CaroHelpers.GRID_SIZE
+  );
 };
 
 /**
@@ -177,23 +172,25 @@ CaroHelpers.canMove = (x, y) => {
  * DVHAI 23/07/2021
  */
 CaroHelpers.cellEqual = (cell1, cell2) => {
-  if (cell1 === CaroHelpers.STATE.BLANK || cell2 === CaroHelpers.STATE.BLANK) return false;
-  if (!cell1.props.name || !cell2.props.name) return false;
-  return cell1.props.name === cell2.props.name;
+  return cell1 === cell2;
 };
 
-/**
- * Lấy người chơi
- * @param {*} grid
- * @param {*} pos
- * @returns
- * DVHAI 23/07/2021
- */
-CaroHelpers.getPlayer = (grid, pos) => {
-  if (typeof pos !== 'object') throw new Error();
-  if (pos) return grid[pos.row][pos.col].props.name || '';
-  return '';
+CaroHelpers.getDisplayCell = (value) => {
+  let display = CaroHelpers.BLANK;
+
+  if (value === CaroHelpers.STATE.X || value === false) {
+    display = <CrossIcon name="X" size="large" primaryColor="red" />;
+  } else if (value === CaroHelpers.STATE.O || value === true) {
+    display = (
+      <MediaServicesPreselectedIcon
+        name="O"
+        size="large"
+        primaryColor="#4fff4f"
+      />
+    );
+  }
+
+  return display;
 };
 
-
-export default CaroHelpers
+export default CaroHelpers;
