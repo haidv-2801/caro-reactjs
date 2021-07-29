@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import Button from '@atlaskit/button';
 import styles from '../../assets/css/views/caro/StartScreen.module.css';
 import BaseInput from '../UI/form/BaseInput';
+import CrossIcon from '@atlaskit/icon/glyph/cross';
+import MediaServicesPreselectedIcon from '@atlaskit/icon/glyph/media-services/preselected';
 import BaseSelectBox from '../UI/form/BaseSelectBox';
 
 const CaroStartScreen = (props) => {
@@ -19,8 +21,8 @@ const CaroStartScreen = (props) => {
 
   /**
    * Lấy giá trị input
-   * @param {event} e 
-   * DVHAI 
+   * @param {event} e
+   * DVHAI
    */
   const inputChangeHandler = (e) => {
     let name = e.target.name,
@@ -47,7 +49,11 @@ const CaroStartScreen = (props) => {
               }}
               onChangeHandler={inputChangeHandler}
             />
-            {props.state.O}
+            <MediaServicesPreselectedIcon
+              name="O"
+              size="large"
+              primaryColor="#4fff4f"
+            />
           </div>
           <div className={styles.row}>
             <BaseInput
@@ -60,7 +66,7 @@ const CaroStartScreen = (props) => {
               }}
               onChangeHandler={inputChangeHandler}
             />
-            {props.state.X}
+            <CrossIcon name="X" size="large" primaryColor="red" />
           </div>
           <div className={styles.row}>
             <BaseSelectBox
@@ -74,7 +80,7 @@ const CaroStartScreen = (props) => {
               render={(item) => Math.round(item / 60) + ' phút'}
               onChangeHandler={inputChangeHandler}
             />
-            <div style={{width:'32px'}}></div>
+            <div style={{ width: '32px' }}></div>
           </div>
         </div>
         <div className={`${styles['start-footer']}`}>

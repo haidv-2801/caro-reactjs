@@ -1,56 +1,53 @@
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useRef,
-} from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import ReactDom from 'react-dom';
 import CaroGrid from './CaroGrid';
 import CaroToolBar from './CaroToolbar';
 import CaroStartScreen from './CaroStartScreen';
 import ModalNotification from '../UI/modal/ModalNotification';
 import CaroAppContext from '../../store/caroapp-context';
-import CaroHelpers from '../../helpers/Caro'
+import CaroHelpers from '../../helpers/Caro';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  updateCell,
+  updateTurn,
+  updateCurrentPos,
+  updateGrid,
+  updatepPreGrid,
+  caroDefaultValue,
+} from '../../redux/slices/CaroSlice';
+import Resource from '../../helpers/Resource';
 
 const START_SCREEN = 'START_SCREEN';
 const GAME_SCREEN = 'GAME_SCREEN';
 
 const CaroApp = () => {
-  const [grid, setGrid] = useState([]);
-  const [preGrid, setPreGrid] = useState([]);
+  const dispatcher = useDispatch();
+  const selector = useSelector((state) => state.caro);
+  const { grid, turn, preGrid, currentPos } = selector;
   const [screenMode, setScreenMode] = useState(START_SCREEN);
-  const [currentPos, setcurrentPos] = useState(null);
   const [modalContent, setModalContent] = useState('');
-  const [turn, setTurn] = useState(true);
   const [counter, setCounter] = useState(0);
   const [activeTimmer, setActiveTimer] = useState(false);
   const [gameInfo, setGameInfo] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
   const canMoveBackRef = useRef(false);
   const toolBarRef = useRef();
-
-  /**
-   * Khởi tạo
-   * DVHAI 20/07/2021
-   */
-  useEffect(() => {
-    setGrid(CaroHelpers.createGrid(CaroHelpers.GRID_SIZE));
-    setPreGrid(CaroHelpers.createGrid(CaroHelpers.GRID_SIZE));
-  }, []);
-
   /**
    * Tìm người chiến thắng
    * mỗi lần click vào ô
    * DVHAI 20/07/2021
    */
   useEffect(() => {
-    if (grid.length && currentPos) {
-      let xName = CaroHelpers.STATE.X.props.name,
-        winn = CaroHelpers.getPlayerByTurn(turn) === xName ? CaroHelpers.STATE.O : CaroHelpers.STATE.X,
-        win = CaroHelpers.winner(grid, currentPos.row, currentPos.col, CaroHelpers.cellEqual),
+    if (grid.length && currentPos !== null) {
+      let win = CaroHelpers.winner(
+          grid,
+          currentPos.row,
+          currentPos.col,
+          CaroHelpers.cellEqual
+        ),
         text = (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {winn} THẮNG
+            {CaroHelpers.getDisplayCell(win)} {Resource.GameResult.Win.format('')}
           </div>
         );
 
@@ -60,7 +57,7 @@ const CaroApp = () => {
       }
 
       if (counter === CaroHelpers.GRID_SIZE * CaroHelpers.GRID_SIZE) {
-        setModalContent(`HÒA`);
+        setModalContent(Resource.GameResult.Draw);
         setModalOpen(true);
       }
     }
@@ -72,20 +69,13 @@ const CaroApp = () => {
    * DVHAI 20/07/2021
    */
   const cellClickHandler = (pos) => {
-    if (grid[pos.row][pos.col] !== CaroHelpers.STATE.BLANK) return;
-    setPreGrid(grid);
+    if (!CaroHelpers.cellEqual(grid[pos.row][pos.col], CaroHelpers.STATE.BLANK))
+      return;
+    dispatcher(updatepPreGrid(grid));
     let newValue = turn ? CaroHelpers.STATE.O : CaroHelpers.STATE.X;
-    setGrid((preState) =>
-      preState.map((row, rIndex) =>
-        row.map((col, cIndex) =>
-          col === CaroHelpers.STATE.BLANK && rIndex === pos.row && cIndex === pos.col
-            ? newValue
-            : col
-        )
-      )
-    );
-    setTurn((preState) => !preState);
-    setcurrentPos(pos);
+    dispatcher(updateCell({ x: pos.row, y: pos.col, value: newValue }));
+    dispatcher(updateTurn(!turn));
+    dispatcher(updateCurrentPos(pos));
     setCounter((preState) => preState + 1);
     toolBarRef.current.resetTimer();
     canMoveBackRef.current = true;
@@ -96,12 +86,12 @@ const CaroApp = () => {
    * DVHAI 21/07/2021
    */
   const restartGameClickHandler = () => {
-    setGrid(CaroHelpers.createGrid(CaroHelpers.GRID_SIZE));
-    setPreGrid(CaroHelpers.createGrid(CaroHelpers.GRID_SIZE));
-    setTurn(true);
+    dispatcher(updateGrid(caroDefaultValue.grid));
+    dispatcher(updatepPreGrid(caroDefaultValue.preGrid));
+    dispatcher(updateTurn(caroDefaultValue.turn));
+    dispatcher(updateCurrentPos(caroDefaultValue.currentPos));
     setCounter(0);
     setActiveTimer(true);
-    setcurrentPos(null);
     setModalOpen(false);
     toolBarRef.current.resetTimer();
   };
@@ -113,10 +103,10 @@ const CaroApp = () => {
   const backPreviousStepClickHandler = useCallback(() => {
     if (counter <= 0 || !canMoveBackRef.current) return;
     canMoveBackRef.current = false;
-    setGrid(preGrid);
-    setTurn(preState => !preState);
-    setCounter(preState => preState-1);
-  }, [preGrid, counter]);
+    dispatcher(updateGrid(preGrid));
+    dispatcher(updateTurn(!turn));
+    setCounter((preState) => preState - 1);
+  }, [preGrid, counter, turn]);
 
   /**
    * Thoát game
@@ -134,8 +124,8 @@ const CaroApp = () => {
   const startClickHandler = (data) => {
     setGameInfo({
       time: data.time,
-      player1: data.player1,
-      player2: data.player2,
+      player1: data.player1 || CaroHelpers.DEFAULT_NAME_PLAYER1,
+      player2: data.player2 || CaroHelpers.DEFAULT_NAME_PLAYER2,
     });
     setActiveTimer(true);
     restartGameClickHandler();
@@ -147,20 +137,22 @@ const CaroApp = () => {
    * DVHAI 23/07/2021
    */
   const timeUp = useCallback(() => {
-    let xName = CaroHelpers.STATE.X.props.name,
-      winner = CaroHelpers.getPlayerByTurn(turn) === xName ? CaroHelpers.STATE.O : CaroHelpers.STATE.X,
-      text = <div style={{ display: 'flex', alignItems: 'center' }}>{winner} THẮNG</div>;
+    let winner = CaroHelpers.getDisplayCell(!turn),
+      text = (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {winner} {Resource.GameResult.Win.format('')}
+        </div>
+      );
 
     setModalContent(text);
     setModalOpen(true);
   }, [turn]);
 
   return (
-    <CaroAppContext.Provider value={{ STATE:CaroHelpers.STATE }}>
+    <CaroAppContext.Provider value={{ STATE: CaroHelpers.STATE }}>
       {screenMode === START_SCREEN &&
         ReactDom.createPortal(
           <CaroStartScreen
-            state={CaroHelpers.STATE}
             open={screenMode === START_SCREEN ? true : false}
             startClickHandler={startClickHandler}
           />,
