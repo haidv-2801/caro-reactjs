@@ -7,6 +7,7 @@ export const caroDefaultValue = {
   preGrid: CaroHelpers.createGrid(CaroHelpers.GRID_SIZE),
   turn: Resource.Player.Player1,
   currentPos: null,
+  cellFilledCounter: 0
 };
 
 const caro = createSlice({
@@ -24,6 +25,9 @@ const caro = createSlice({
 
     //Tọa độ hiện tại
     currentPos: caroDefaultValue.currentPos,
+    
+    //grid bị lấp đầy
+    cellFilledCounter: caroDefaultValue.cellFilledCounter
   },
 
   reducers: {
@@ -32,7 +36,7 @@ const caro = createSlice({
      * DVHAI 29/07/2021
      */
     updateGrid: (state, action) => {
-      state.grid = action.payload.slice();
+      state.grid = action.payload;
     },
 
     /**
@@ -51,7 +55,7 @@ const caro = createSlice({
      * DVHAI 29/07/2021
      */
     updatepPreGrid: (state, action) => {
-      state.preGrid = JSON.parse(JSON.stringify(action.payload));
+      state.preGrid = action.payload;
     },
 
     /**
@@ -71,6 +75,14 @@ const caro = createSlice({
       if (action.payload == null) newValue = null;
       state.currentPos = newValue;
     },
+
+     /**
+     * Sửa trạng thái đầy
+     * DVHAI 29/07/2021
+     */
+      updateCellFilledCounter: (state, action) => {
+        state.cellFilledCounter = action.payload;
+      },
   },
 });
 
@@ -81,5 +93,6 @@ export const {
   updateTurn,
   updatepPreGrid,
   updateCurrentPos,
+  updateCellFilledCounter
 } = actions;
 export default reducer;

@@ -1,11 +1,8 @@
 import React from 'react';
+import CaroApp from '../components/carobiggrid/CaroApp';
 
 const HomePage = () => {
-    return (
-        <>
-            
-        </>
-    );
+  return <CaroApp/>;
 };
 
 export default HomePage;

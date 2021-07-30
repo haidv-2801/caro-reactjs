@@ -7,6 +7,7 @@ import React, {
 import Button from '@atlaskit/button';
 import CountDownEngine from '../counter/CountDownEngine';
 import CaroHelpers from '../../helpers/Caro';
+import Resource from '../../helpers/Resource';
 
 const CaroToolbar = (props, ref) => {
   const timmerRef = useRef();
@@ -33,7 +34,7 @@ const CaroToolbar = (props, ref) => {
    * Hết thời gian
    * DVHAI 24/07/2021
    */
-  const {timeUp} = props;
+  const { timeUp } = props;
   const timeIsUp = useCallback(() => {
     timeUp();
   }, [timeUp]);
@@ -55,7 +56,7 @@ const CaroToolbar = (props, ref) => {
         {CaroHelpers.getDisplayCell(props.turn)}
         {`${
           props.turn
-            ? props.gameInfo.player1
+            ? props.gameInfo.player1 || 'player'
             : props.gameInfo.player2
         }`}
       </div>
@@ -73,6 +74,9 @@ const CaroToolbar = (props, ref) => {
         <Button onClick={props.exitGame} className="button-back-step-exit">
           Thoát game
         </Button>
+        {/* <div style={{ cursor: 'pointer' }} className="span">
+          {Resource.Icon.CHERVON_DOWN}
+        </div> */}
       </div>
     </div>
   );
