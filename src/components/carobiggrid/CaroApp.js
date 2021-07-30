@@ -13,6 +13,7 @@ import {
   updateCurrentPos,
   updateGrid,
   updatepPreGrid,
+  updateCellFilledCounter,
   caroDefaultValue,
 } from '../../redux/slices/CaroSlice';
 import Resource from '../../helpers/Resource';
@@ -23,22 +24,22 @@ const GAME_SCREEN = 'GAME_SCREEN';
 const CaroApp = () => {
   const dispatcher = useDispatch();
   const selector = useSelector((state) => state.caro);
-  const { grid, turn, preGrid, currentPos } = selector;
+  const { grid, turn, preGrid, currentPos, cellFilledCounter } = selector;
   const [screenMode, setScreenMode] = useState(START_SCREEN);
   const [modalContent, setModalContent] = useState('');
-  const [counter, setCounter] = useState(0);
   const [activeTimmer, setActiveTimer] = useState(false);
   const [gameInfo, setGameInfo] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
   const canMoveBackRef = useRef(false);
   const toolBarRef = useRef();
+
   /**
    * Tìm người chiến thắng
    * mỗi lần click vào ô
    * DVHAI 20/07/2021
    */
   useEffect(() => {
-    if (grid.length && currentPos !== null) {
+    if (grid.length && currentPos !== null && grid[currentPos.row][currentPos.col] !== CaroHelpers.STATE.BLANK) {
       let win = CaroHelpers.winner(
           grid,
           currentPos.row,
@@ -47,7 +48,8 @@ const CaroApp = () => {
         ),
         text = (
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {CaroHelpers.getDisplayCell(win)} {Resource.GameResult.Win.format('')}
+            {CaroHelpers.getDisplayCell(win)}{' '}
+            {Resource.GameResult.Win.format('')}
           </div>
         );
 
@@ -56,12 +58,12 @@ const CaroApp = () => {
         setModalOpen(true);
       }
 
-      if (counter === CaroHelpers.GRID_SIZE * CaroHelpers.GRID_SIZE) {
+      if (cellFilledCounter === CaroHelpers.GRID_SIZE * CaroHelpers.GRID_SIZE) {
         setModalContent(Resource.GameResult.Draw);
         setModalOpen(true);
       }
     }
-  }, [grid, currentPos, turn, counter]);
+  }, [grid, currentPos, turn, cellFilledCounter]);
 
   /**
    * Click vào ô
@@ -76,7 +78,7 @@ const CaroApp = () => {
     dispatcher(updateCell({ x: pos.row, y: pos.col, value: newValue }));
     dispatcher(updateTurn(!turn));
     dispatcher(updateCurrentPos(pos));
-    setCounter((preState) => preState + 1);
+    dispatcher(updateCellFilledCounter(cellFilledCounter + 1));
     toolBarRef.current.resetTimer();
     canMoveBackRef.current = true;
   };
@@ -90,7 +92,7 @@ const CaroApp = () => {
     dispatcher(updatepPreGrid(caroDefaultValue.preGrid));
     dispatcher(updateTurn(caroDefaultValue.turn));
     dispatcher(updateCurrentPos(caroDefaultValue.currentPos));
-    setCounter(0);
+    dispatcher(updateCellFilledCounter(caroDefaultValue.cellFilledCounter));
     setActiveTimer(true);
     setModalOpen(false);
     toolBarRef.current.resetTimer();
@@ -101,12 +103,12 @@ const CaroApp = () => {
    * DVHAI 22/07/2021
    */
   const backPreviousStepClickHandler = useCallback(() => {
-    if (counter <= 0 || !canMoveBackRef.current) return;
+    if (cellFilledCounter <= 0 || !canMoveBackRef.current) return;
     canMoveBackRef.current = false;
     dispatcher(updateGrid(preGrid));
     dispatcher(updateTurn(!turn));
-    setCounter((preState) => preState - 1);
-  }, [preGrid, counter, turn]);
+    dispatcher(updateCellFilledCounter(updateCellFilledCounter - 1));
+  }, [preGrid, cellFilledCounter, turn, dispatcher]);
 
   /**
    * Thoát game

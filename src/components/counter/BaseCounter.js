@@ -10,8 +10,6 @@ const BaseCounter = ({
   const [counter, setCounter] = useState();
   const counterRef = useRef();
 
-  useEffect(()=>{console.log(active);})
-
   const setCounterRef = () => {
     counterRef.current = type === 'UP' ? min : max;
     setCounter(type === 'UP' ? min : max);
@@ -42,7 +40,6 @@ const BaseCounter = ({
         break;
       case 'DOWN':
         count = setInterval(() => {
-          console.log(active)
           if (active) {
             if (counterRef.current > min) {
               counterRef.current--;

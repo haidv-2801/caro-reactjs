@@ -175,6 +175,12 @@ CaroHelpers.cellEqual = (cell1, cell2) => {
   return cell1 === cell2;
 };
 
+/**
+ * Lấy hiển thị của ô
+ * @param {giá trị true(o)/false(x) hoặc state} value 
+ * @returns 
+ * DVHAI 23/07/2021
+ */
 CaroHelpers.getDisplayCell = (value) => {
   let display = CaroHelpers.BLANK;
 

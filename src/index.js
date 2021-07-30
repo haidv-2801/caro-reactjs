@@ -4,6 +4,7 @@ import App from './App';
 import store from './redux/Store';
 import './index.css';
 import { Provider } from 'react-redux';
+import { BrowserRouter } from 'react-router-dom';
 
 //Định nghĩa prototy fomat
 String.prototype.format = function () {
@@ -17,7 +18,9 @@ String.prototype.format = function () {
 ReactDOM.render(
   <Provider store={store}>
     <React.StrictMode>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </React.StrictMode>
   </Provider>,
   document.getElementById('root')

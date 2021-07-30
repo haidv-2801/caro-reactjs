@@ -7,7 +7,7 @@
   width: 200px;
 }
 
-.input:focus-visible {
+.input.valid:focus-visible {
   outline: 1px solid springgreen;
 }
 
@@ -15,9 +15,22 @@
   border: 1px solid red !important;
 }
 
+.input.invalid:focus-visible {
+  outline: none;
+}
+
 label {
     display: inline-block;
     font-size: 13px;
     padding: 5px 0px;
     font-weight: 500;
+}
+
+.input-gr {
+  display: flex;
+}
+
+.error {
+  font-size: 12px;
+  color: red;
 }
